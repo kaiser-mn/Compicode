@@ -9,53 +9,63 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-color: #f0f0f0;
+      background-color: #222; /* Dark Background */
+      color: #eee; /* Light Text */
     }
 
     .container {
-      background-color: #fff;
+      background-color: #333; /* Darker Grey */
       padding: 30px;
       border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* More Prominent Shadow */
       text-align: center;
     }
 
     h1 {
       margin-bottom: 20px;
-      color: #333;
+      color: #f0f0f0; /* Lighter Grey */
     }
 
     #word {
       font-size: 2em;
       margin-bottom: 20px;
+      color: #0f0; /* Green */
     }
 
     input[type="text"] {
       padding: 10px;
       font-size: 1em;
-      border: 1px solid #ccc;
+      border: 1px solid #777; /* Darker Grey Border */
       border-radius: 3px;
+      background-color: #444; /* Dark Grey Background */
+      color: #eee; /* Light Text */
     }
 
     button {
       padding: 10px 20px;
       font-size: 1em;
-      background-color: #4CAF50;
+      background-color: #4CAF50; /* Green */
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       margin-top: 10px;
+      transition: background-color 0.3s ease; /* Smooth Transition */
+    }
+
+    button:hover {
+      background-color: #45a049; /* Darker Green */
     }
 
     #timer {
       font-size: 1.5em;
       margin-top: 20px;
+      color: #ff0; /* Yellow */
     }
 
     #message {
       margin-top: 10px;
-      color: #333;
+      color: #ff0; /* Yellow */
     }
   </style>
 </head>
