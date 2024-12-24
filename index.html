@@ -1,155 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Word Scramble</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #222; /* Dark Background */
-      color: #eee; /* Light Text */
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Scramble</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #000; /* Very Dark Background */
+            color: #0f0; /* Green Text */
+            overflow: hidden;
+            position: relative;
+        }
 
-    .container {
-      background-color: #333; /* Darker Grey */
-      padding: 30px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* More Prominent Shadow */
-      text-align: center;
-    }
+        .matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
 
-    h1 {
-      margin-bottom: 20px;
-      color: #f0f0f0; /* Lighter Grey */
-    }
+        .letter {
+            position: absolute;
+            bottom: 100%;
+            color: #0f0;
+            font-size: 20px;
+            white-space: nowrap;
+            animation: fall linear infinite;
+        }
 
-    #word {
-      font-size: 2em;
-      margin-bottom: 20px;
-      color: #0f0; /* Green */
-    }
+        @keyframes fall {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
 
-    input[type="text"] {
-      padding: 10px;
-      font-size: 1em;
-      border: 1px solid #777; /* Darker Grey Border */
-      border-radius: 3px;
-      background-color: #444; /* Dark Grey Background */
-      color: #eee; /* Light Text */
-    }
+        .container {
+            background-color: rgba(50, 50, 50, 0.8); /* Semi-transparent Dark Grey */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            z-index: 1; /* Ensure it is above the matrix */
+        }
 
-    button {
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: #4CAF50; /* Green */
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background-color 0.3s ease; /* Smooth Transition */
-    }
+        h1 {
+            margin-bottom: 20px;
+            color: #fff; /* White Text */
+        }
 
-    button:hover {
-      background-color: #45a049; /* Darker Green */
-    }
+        #word {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
 
-    #timer {
-      font-size: 1.5em;
-      margin-top: 20px;
-      color: #ff0; /* Yellow */
-    }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #777; /* Darker Grey Border */
+            border-radius: 10px;
+            background-color: #444; /* Dark Grey Background */
+            color: #eee; /* Light Text */
+            width: 80%;
+            margin-bottom: 10px;
+        }
 
-    #message {
-      margin-top: 10px;
-      color: #ff0; /* Yellow */
-    }
-  </style>
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease; /* Smooth Transition */
+        }
+
+        button:hover {
+            background-color: #45a049; /* Darker Green */
+        }
+
+        #timer {
+            font-size: 1.5em;
+            margin-top: 20px;
+            color: #ff0; /* Yellow */
+        }
+
+        #message {
+            margin-top: 10px;
+            color: #ff0; /* Yellow */
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Word Scramble</h1>
-    <div id="word"></div>
-    <input type="text" id="answer" placeholder="Enter your answer">
-    <button id="check">Check Answer</button>
-    <div id="timer">Time: 30</div>
-    <div id="message"></div>
-    <select id="difficulty">
-      <option value="easy">Easy</option>
-      <option value="medium">Medium</option>
-      <option value="hard">Hard</option>
-    </select>
-    <button id="newWord">New Word</button>
-  </div>
+    <div class="matrix"></div>
+    <div class="container">
+        <h1>Word Scramble</h1>
+        <div id="word"></div>
+        <input type="text" id="answer" placeholder="Enter your answer">
+        <button id="check">Check Answer</button>
+        <div id="timer">Time: 30</div>
+        <div id="message"></div>
+        <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+        <button id="newWord">New Word</button>
+    </div>
 
-  <script>
-    const words = {
-      easy: ["hello", "world", "apple", "chair", "house"],
-      medium: ["amazing", "beautiful", "computer", "elephant", "mountain"],
-      hard: ["dictionary", "university", "impossible", "opportunity", "knowledge"]
-    };
+    <script>
+        const words = {
+            easy: ["hello", "world", "apple", "chair", "house"],
+            medium: ["amazing", "beautiful", "computer", "elephant", "mountain"],
+            hard: ["dictionary", "university", "impossible", "opportunity", "knowledge"]
+        };
 
-    const wordElement = document.getElementById("word");
-    const answerInput = document.getElementById("answer");
-    const checkButton = document.getElementById("check");
-    const timerElement = document.getElementById("timer");
-    const messageElement = document.getElementById("message");
-    const difficultySelect = document.getElementById("difficulty");
-    const newWordButton = document.getElementById("newWord");
+        const wordElement = document.getElementById("word");
+        const answerInput = document.getElementById("answer");
+        const checkButton = document.getElementById("check");
+        const timerElement = document.getElementById("timer");
+        const messageElement = document.getElementById("message");
+        const difficultySelect = document.getElementById("difficulty");
+        const newWordButton = document.getElementById("newWord");
 
-    let currentWord = "";
-    let timeRemaining = 30;
-    let timerInterval;
+        let currentWord = "";
+        let timeRemaining = 30;
+        let timerInterval;
 
-    function startTimer() {
-      timerInterval = setInterval(() => {
-        timeRemaining--;
-        timerElement.textContent = `Time: ${timeRemaining}`;
-        if (timeRemaining === 0) {
-          clearInterval(timerInterval);
-          messageElement.textContent = "Time's up! The correct word was " + currentWord;
-          answerInput.disabled = true;
-          checkButton.disabled = true;
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                timerElement.textContent = `Time: ${timeRemaining}`;
+                if (timeRemaining === 0) {
+                    clearInterval(timerInterval);
+                    messageElement.textContent = "Time's up! The correct word was " + currentWord;
+                    answerInput.disabled = true;
+                    checkButton.disabled = true;
+                }
+            }, 1000);
         }
-      }, 1000);
-    }
 
-    function generateWord(difficulty) {
-      const randomIndex = Math.floor(Math.random() * words[difficulty].length);
-      currentWord = words[difficulty][randomIndex];
-      const scrambledWord = currentWord.split('').sort(() => 0.5 - Math.random()).join('');
-      wordElement.textContent = scrambledWord;
-      answerInput.value = "";
-      answerInput.disabled = false;
-      checkButton.disabled = false;
-      messageElement.textContent = "";
-      timeRemaining = 30;
-      timerElement.textContent = `Time: ${timeRemaining}`;
-      clearInterval(timerInterval);
-      startTimer();
-    }
+        function generateWord(difficulty) {
+            const randomIndex = Math.floor(Math.random() * words[difficulty].length);
+            currentWord = words[difficulty][randomIndex];
+            const scrambledWord = currentWord.split('').sort(() => 0.5 - Math.random()).join('');
+            wordElement.textContent = scrambledWord;
+            answerInput.value = "";
+            answerInput.disabled = false;
+            checkButton.disabled = false;
+            messageElement.textContent = "";
+            timeRemaining = 30;
+            timerElement.textContent = `Time: ${timeRemaining}`;
+            clearInterval(timerInterval);
+            startTimer();
+        }
 
-    checkButton.addEventListener("click", () => {
-      const userAnswer = answerInput.value.toLowerCase();
-      if (userAnswer === currentWord) {
-        clearInterval(timerInterval);
-        messageElement.textContent = "Correct!";
-        answerInput.disabled = true;
-        checkButton.disabled = true;
-      } else {
-        messageElement.textContent = "Incorrect. Try again.";
-      }
-    });
+        checkButton.addEventListener("click", () => {
+            const userAnswer = answerInput.value.toLowerCase();
+            if (userAnswer === currentWord) {
+                clearInterval(timerInterval);
+                messageElement.textContent = "Correct!";
+                answerInput.disabled = true;
+                checkButton.disabled = true;
+            } else {
+                messageElement.textContent = "Incorrect. Try again.";
+            }
+        });
 
-    newWordButton.addEventListener("click", () => {
-      generateWord(difficultySelect.value);
-    });
+        newWordButton.addEventListener("click", () => {
+            generateWord(difficultySelect.value);
+        });
 
-    // Generate a word on page load
-    generateWord("easy");
-  </script>
+        // Generate a word on page load
+        generateWord("easy");
+
+        // Create matrix effect
+        function createMatrixEffect() {
+            const matrixContainer = document.querySelector('.matrix');
+            const columns = Math.floor(window.innerWidth / 20); // Adjust based on letter size
+            for (let i = 0; i < columns; i++) {
+                const letter = document.createElement('div');
+                letter.className = 'letter';
+                letter.textContent = String.fromCharCode(Math.random() * 128);
+                letter.style.left = `${i * 20}px`;
+                letter.style.animationDuration = `${Math.random() * 3 + 2}s`; // Random fall speed
+                matrixContainer.appendChild(letter);
+            }
+        }
+
+        createMatrixEffect();
+    </script>
 </body>
 </html>
