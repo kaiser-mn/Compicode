@@ -25,11 +25,17 @@
 
         .letter {
             position: absolute;
-            bottom: 100%;
             color: #0f0;
             font-size: 20px;
             white-space: nowrap;
+        }
+
+        .fall {
             animation: fall linear infinite;
+        }
+
+        .rise {
+            animation: rise linear infinite;
         }
 
         @keyframes fall {
@@ -38,6 +44,15 @@
             }
             100% {
                 transform: translateY(100vh);
+            }
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-100vh);
             }
         }
 
@@ -188,12 +203,22 @@
             const matrixContainer = document.querySelector('.matrix');
             const columns = Math.floor(window.innerWidth / 20); // Adjust based on letter size
             for (let i = 0; i < columns; i++) {
-                const letter = document.createElement('div');
-                letter.className = 'letter';
-                letter.textContent = String.fromCharCode(Math.random() * 128);
-                letter.style.left = `${i * 20}px`;
-                letter.style.animationDuration = `${Math.random() * 3 + 2}s`; // Random fall speed
-                matrixContainer.appendChild(letter);
+                // Create falling letters
+                const fallLetter = document.createElement('div');
+                fallLetter.className = 'letter fall';
+                fallLetter.textContent = String.fromCharCode(Math.random() * 128);
+                fallLetter.style.left = `${i * 20}px`;
+                fallLetter.style.animationDuration = `${Math.random() * 3 + 2}s`; // Random fall speed
+                matrixContainer.appendChild(fallLetter);
+
+                // Create rising letters
+                const riseLetter = document.createElement('div');
+                riseLetter.className = 'letter rise';
+                riseLetter.textContent = String.fromCharCode(Math.random() * 128);
+                riseLetter.style.left = `${i * 20}px`;
+                riseLetter.style.animationDuration = `${Math.random() * 3 + 2}s`; // Random rise speed
+                riseLetter.style.bottom = '0'; // Start from the bottom
+                matrixContainer.appendChild(riseLetter);
             }
         }
 
